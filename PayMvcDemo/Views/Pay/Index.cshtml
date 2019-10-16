@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@model TicketHTPay.PayShowModel
+<script src = "/Scripts/jquery-3.3.1.min.js" ></script >
+<script type="text/javascript">
+    $(function () {
+
+        inter();
+
+        var t1 = window.setInterval(inter, 1000);
+        function inter() {
+            $.ajax({
+                url: "/Pay/CheckTrade/",
+                data: { "tradeNo": $("#tradeNo").val() },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    $("#msg").append("<li>状态:" + data.status + ",消息:" + data.msg + ",返回内容：" + data.result + "</li>");
+                    $("#status").text(data.status + ":" + data.msg);
+                    if (data.status == 1) {
+                        window.clearInterval(t1);
+                    }
+                    if (data.errCode != "0000") {
+                        window.clearInterval(t1);
+                    }
+                }
+            });
+        }
+
+    })
+
+</script>
+<style type="text/css">
+    #msg li {
+        margin-top: 20px;
+        line-height: 30px;
+    }
+</style>
+<input type="hidden" value="@Model.tradeNo" id="tradeNo" />
+<p>状态：<b id="status"></b></p>
+<div>
+    <img src="@Model.PayImgUrl" />
+</div>
+<ul id="msg"></ul>
+
